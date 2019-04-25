@@ -46,7 +46,78 @@ so we don't want people to get
 the impression that our demands
 are subjective or whimsical.
 
+## Rules
 
-## Frédéric Vogels
+# MVVM
 
-The M/VM/V layering must be respected.
+The M/VM/V layering must be respected at all cost.
+The "knows-of" relation flows downwards in the diagram
+below:
+
+<center>
+
+| Structure |
+|:---:|
+| V |
+| VM |
+| M |
+
+</center>
+
+* The M does not know about the VM or V and
+must not mention any type of the layer above it.
+* The VM knows the M, but does not know anything about the V.
+* The V knows both the VM and M, but ideally, the V
+does not speak directly to the M.
+
+The reasoning behind this is:
+
+* We want to be able to reuse code in other contexts. If the M
+were to contain WPF types, it becomes impossible to reuse the M
+on a platform for which WPF is not available, e.g., mobile devices. Similary, we want to be able to reuse the VM.
+
+An necessary (but not sufficient) test
+to check that the layering is respected,
+is to verify the project references.
+
+* The Model project should not contain a reference
+to the ViewModel, View project or to WPF.
+* The ViewModel can (and should) have a reference
+to the model, but not to the View of WPF.
+* The View can have any references you want.
+
+References can be viewed in the Solution Explorer,
+i.e., the pane which lists all your projects.
+Each project is shows as a tree which contains
+your files, but also has a References node under
+which all references are listed.
+WPF appears here as PresentationCore
+and PresentationFramework.
+
+The solution we provided normally contains
+only valid references, but each year
+there are students who add forbidden references.
+It is possible that this happens automatically
+if you try to use a type from another project.
+Say you mention `Brush` in your ViewModel:
+the compiler complains as that type is unavailable.
+Asking Visual Studio to fix it will then add
+a reference to WPF in your VM, which is definitely
+not what you want. So, even though
+your references were originally correct,
+it is still a good idea to check.
+
+An easy test to verify the layering is to check
+the references of each the three projects in your solution.
+The Model project should not contain a reference to the ViewModel
+or to the View projects, etc. Everything should still compile.
+
+The code we have provided should already be configured correctly,
+i.e. it does not contain forbidden references. Each year, however,
+there are students that somehow still manage to link
+the projects
+
+
+* No click
+* No class duplication (e.g. commands)
+* 
